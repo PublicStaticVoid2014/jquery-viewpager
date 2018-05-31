@@ -35,8 +35,8 @@ if (window.jQuery) {
             var that = this;
 
             items.css('width', (children.length * 100) + "%").css('transition', '0.3s ease-in-out');
-            children.css("width", (100/children.length) + "%").css('display', 'inline-block').css('float', 'left');
-            this.css('transition');
+            children.css("width", (100/children.length) + "%").css('display', 'inline-block').css('float', 'left').css('overflow-y', 'scroll');
+            this.css('overflow-x', 'hidden');
             this.goToPage = function(i) {
                 if (i < 0 || i > children.length) {
                     console.warn("out of range!");
@@ -54,23 +54,28 @@ if (window.jQuery) {
             this.getMyPage = function() {
                 return my_page;
             }
+            this.getChildAt = function (i) {
+                return children[i];
+            }
             // start
-            this.on('touchstart mousedown', function(e) {
+            this.on(hasTouch ? 'touchstart' : 'mousedown', function(e) {
                 isDragging = true;
                 isHorizontal = false;
+                isFirstMove = true;
                 var pt = getPoint(e);
                 drag_start_y = pt[1];
                 drag_start_x = pt[0];
                 drag_start_time = pt[2]
             })
             // move
-            this.on('touchmove mousemove', function(e) {
+            this.on(hasTouch ? 'touchmove' : 'mousemove', function(e) {
                 var pt = getPoint(e);
                 var dx = pt[0] - drag_start_x;
                 var dy = pt[1] - drag_start_y;
                 if (isFirstMove) {
                     // determine if is horizontal
-                    isHorizontal = dy / dx < 0.25;
+                    isHorizontal = Math.abs(dy / dx) < 0.5;
+                    isFirstMove = false;
                 }
                 if (isHorizontal && isDragging) {
                     // move along
@@ -102,8 +107,9 @@ if (window.jQuery) {
                 }
             })
             // end
-            this.on('touchend touchcancel mouseup mousecancel', function(e) {
+            this.on(hasTouch ? 'touchend touchcancel' : 'mouseup mousecancel', function(e) {
                 enable_animation();
+                if (!isHorizontal) return;
                 var pt = getPoint(e);
                 var dx = pt[0] - drag_start_x;
                 var x_vel = dx / (pt[2] - drag_start_time);
@@ -118,7 +124,6 @@ if (window.jQuery) {
                     return;
                 }
                 my_page = -Math.round(offset_px / width);
-                console.log(my_page);
                 if (my_page < 0) my_page = 0;
                 if (my_page > children.length - 1) my_page = children.length - 1;
                 that.goToPage(my_page);
@@ -128,8 +133,8 @@ if (window.jQuery) {
 
             function getPoint(e) {
                 if (hasTouch) {
-                      var t = (e.touches && e.touches.length) ? e.touches : e.changedTouches;
-                      return [t[0].screenX, t[0].screenY, e.timeStamp];
+                    var t = (e.touches && e.touches.length) ? e.touches : e.changedTouches;
+                    return [t[0].screenX, t[0].screenY, e.timeStamp];
                 } else {
                     return [e.screenX, e.screenY, e.timeStamp];
                 }
