@@ -123,10 +123,10 @@ if (window.jQuery) {
                     e.stopImmediatePropagation();
                     return;
                 }
-                my_page = -Math.round(offset_px / width);
-                if (my_page < 0) my_page = 0;
-                if (my_page > children.length - 1) my_page = children.length - 1;
-                that.goToPage(my_page);
+                var _my_page = -Math.round(offset_px / width);
+                if (_my_page < 0) _my_page = 0;
+                if (_my_page > children.length - 1) _my_page = children.length - 1;
+                that.goToPage(_my_page);
                 isDragging = false;
                 isHorizontal = false;
             });
