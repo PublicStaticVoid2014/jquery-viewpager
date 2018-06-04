@@ -1,6 +1,6 @@
 /*
     jquery-viewpager
-    Copyright (C) 2018  PublicStaticVoid2014
+    Copyright (C) 2018  UtopiaMint
     
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (window.jQuery) {
-    (function($) {
+    (function($, undefined) {
         var viewpagers = [];
         $.fn.viewpager = function(selector){
             var width = this.width();
@@ -44,10 +44,10 @@ if (window.jQuery) {
                 } else {
                     offset_px = -width * i;
                     items.css('transform', 'translateX(%spx)'.replace('%s', offset_px));
-                    if (my_page != i) {
+                    // if (my_page != i) {
                         my_page = i;
                         that.trigger('pagechange', [i, that]);
-                    }
+                    // }
                     return true;
                 }
             }
@@ -102,6 +102,11 @@ if (window.jQuery) {
                     } else {
                         offset_px = -width * my_page + dx;
                         items.css('transform', 'translateX(%spx)'.replace('%s', offset_px));
+                        var now = 1 * new Date();
+                        if (this.last_anim_trigger === undefined || this.last_anim_trigger + 50 > now) {
+                            this.last_anim_trigger = 1 * now;
+                        }
+                        $(this).trigger('pageanimation', [-offset_px / width, this]);
                         e.stopImmediatePropagation();
                     }
                 }
