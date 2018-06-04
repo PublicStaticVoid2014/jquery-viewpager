@@ -1,5 +1,5 @@
 # jquery-viewpager
-A jQuery plugin which replicates Android's ViewPager, works on touch-enabled devices. 
+A jQuery plugin which replicates Android's ViewPager, works on touch-enabled devices. Supports nested ViewPager's too.
 
 ## Usage:
 
